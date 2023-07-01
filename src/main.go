@@ -1,40 +1,44 @@
 package main
 
 import (
-  // std
-	"errors"
+	// std
+
 	"fmt"
 	"os"
 
-  // internal
-  "com.stimstore/stim-db/src/db"
-
-  // external
-	"github.com/joho/godotenv"
+	// internal
+	"com.stimstore/stim-db/src/args"
+	"com.stimstore/stim-db/src/db"
+	"com.stimstore/stim-db/src/router"
+	// external
 )
 
 // corresponds to everything in .env_example
 // make sure when updating .env to update here and in func loadEnvVars
 
-
 func main() {
 	// start by connecting to db inside of env
-	envArgs, err := loadEnvVars()
+	envArgs, err := args.LoadEnvVars()
 
 	if err != nil {
 		fmt.Println("Error; unable to load .env file: ", err)
 		os.Exit(1)
 	}
 
-  cmdArgs := checkArgs()
+	cmdArgs := args.LoadCmdArgs()
 
-  fmt.Println(envArgs)
-  fmt.Println(cmdArgs)
+	if cmdArgs.Seed {
+		err := db.SeedDB(envArgs)
+		if err != nil {
+			fmt.Println("Error during seed: ", err)
+			fmt.Println("Exiting")
+			os.Exit(1)
+		}
+	}
 
-  if (cmdArgs.seed){
-    db.SeedDB(envArgs)
-    os.Exit(0)
-  }
+	fmt.Println(envArgs)
+	fmt.Println(cmdArgs)
+
+	router.StartHttpClient(envArgs.PORT)
 
 }
-
