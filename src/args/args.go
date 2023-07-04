@@ -1,25 +1,25 @@
 package args
 
 import (
-	"errors"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
 )
 
-type EnvArgs struct {
+type EnvArgsType struct {
 	DB_URL               string
 	SUPABASE_SERVICE_KEY string
 	PORT                 string
 }
 
-type CmdArgs struct {
-	Seed bool
+type CmdArgType struct {
+	Migrate bool
 }
 
-func LoadEnvVars() (EnvArgs, error) {
-	envArgs := EnvArgs{}
+func loadEnvVars() EnvArgsType {
+	envArgs := EnvArgsType{}
 
 	err := godotenv.Load(".env")
 	if err != nil {
@@ -32,25 +32,25 @@ func LoadEnvVars() (EnvArgs, error) {
 	envArgs.PORT = os.Getenv("PORT")
 
 	if envArgs.DB_URL == "" {
-		return EnvArgs{}, errors.New("DB_URL not found in .env")
+		log.Fatal("DB_URL not found in .env")
 	}
 
 	if envArgs.SUPABASE_SERVICE_KEY == "" {
-		return EnvArgs{}, errors.New("SUPABASE_SERVICE_KEY not found in .env")
+		log.Fatal("SUPABASE_SERVICE_KEY not found in .env")
 	}
 
-	return envArgs, nil
+	return envArgs
 }
 
-func LoadCmdArgs() CmdArgs {
+func loadCmdArgs() CmdArgType {
 
-	args := CmdArgs{}
+	args := CmdArgType{}
 
 	if len(os.Args) > 1 {
 		for _, arg := range os.Args[1:] {
 
-			if arg == "--seed" {
-				args.Seed = true
+			if arg == "--migrate" {
+				args.Migrate = true
 			}
 		}
 
@@ -58,3 +58,6 @@ func LoadCmdArgs() CmdArgs {
 
 	return args
 }
+
+var CmdArgs CmdArgType = loadCmdArgs()
+var EnvArgs EnvArgsType = loadEnvVars()
