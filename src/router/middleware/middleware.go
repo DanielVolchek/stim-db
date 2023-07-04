@@ -8,6 +8,26 @@ import (
 	"com.stimstore/stim-db/src/db"
 )
 
+type AuthError struct {
+	error
+	isAdminError bool
+}
+
+func RespondUnauthorized(w http.ResponseWriter, err AuthError) {
+	w.WriteHeader(http.StatusUnauthorized)
+	log.Println("Error occurred: ", err.Error())
+
+	response := "Unauthorized to access this resource"
+	header := http.StatusUnauthorized
+	if err.isAdminError {
+		response = "Not an admin"
+		header = http.StatusForbidden
+	}
+
+	w.WriteHeader(header)
+	w.Write([]byte(response))
+}
+
 func AuthCore(session *http.Cookie, needsAdmin bool) error {
 
 	err := session.Valid()
@@ -38,9 +58,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		err = AuthCore(session, false)
 
 		if err != nil {
-			w.WriteHeader(http.StatusUnauthorized)
-			log.Println("Error occurred: ", err.Error())
-			w.Write([]byte("Unauthorized to access this resource given information provided"))
+			RespondUnauthorized(w, AuthError{err, false})
 		}
 
 		next.ServeHTTP(w, r)
@@ -55,9 +73,7 @@ func AdminMiddleware(next http.Handler) http.Handler {
 		err = AuthCore(session, true)
 
 		if err != nil {
-			w.WriteHeader(http.StatusUnauthorized)
-			log.Println("Error occurred: ", err.Error())
-			w.Write([]byte("Unauthorized to access this resource given information provided"))
+			RespondUnauthorized(w, AuthError{err, true})
 		}
 
 		next.ServeHTTP(w, r)
