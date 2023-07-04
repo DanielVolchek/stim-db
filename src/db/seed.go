@@ -1,6 +1,8 @@
 package db
 
-import "log"
+import (
+	"log"
+)
 
 func MigrateDB() {
 
