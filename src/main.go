@@ -3,9 +3,6 @@ package main
 import (
 	// std
 
-	"fmt"
-	"os"
-
 	// internal
 	"com.stimstore/stim-db/src/args"
 	"com.stimstore/stim-db/src/db"
@@ -18,26 +15,13 @@ import (
 
 func main() {
 	// start by connecting to db inside of env
-	envArgs, err := args.LoadEnvVars()
+	envArgs := args.EnvArgs
+	cmdArgs := args.CmdArgs
 
-	if err != nil {
-		fmt.Println("Error; unable to load .env file: ", err)
-		os.Exit(1)
+	if cmdArgs.Migrate {
+		db.MigrateDB()
+		return
 	}
-
-	cmdArgs := args.LoadCmdArgs()
-
-	if cmdArgs.Seed {
-		err := db.SeedDB(envArgs)
-		if err != nil {
-			fmt.Println("Error during seed: ", err)
-			fmt.Println("Exiting")
-			os.Exit(1)
-		}
-	}
-
-	fmt.Println(envArgs)
-	fmt.Println(cmdArgs)
 
 	router.StartHttpClient(envArgs.PORT)
 
