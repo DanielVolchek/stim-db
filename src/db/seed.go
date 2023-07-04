@@ -1,10 +1,17 @@
 package db
 
-import (
-	"com.stimstore/stim-db/src/args"
-)
+import "log"
 
-func SeedDB(argList args.EnvArgs) error {
+func MigrateDB() {
 
-	return nil
+	// This will probably error but only because type already exists
+	DB_CONN.Exec("CREATE TYPE role_enum AS ENUM ('USER', 'ADMIN')")
+
+	err := DB_CONN.AutoMigrate(&User{}, &Session{}, &Item{}, &RentEvent{}, &Image{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	CreateNewSessionOnUser()
+
 }
