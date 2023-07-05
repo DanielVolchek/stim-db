@@ -8,13 +8,13 @@ import (
 	"github.com/danielvolchek/stim-db/pkg/router/middleware"
 )
 
-var TokenRoute Route = Route{
-	route:        "/admin/token",
-	finalHandler: http.HandlerFunc(TokenFinalHandler),
+var ServerTokenRoute Route = Route{
+	route:        "/admin/servertoken",
+	finalHandler: http.HandlerFunc(ServerTokenFinalHandler),
 	middleware:   []Middleware{middleware.AdminMiddleware},
 }
 
-func TokenGetHandler(w http.ResponseWriter, r *http.Request) {
+func ServerTokenGetHandler(w http.ResponseWriter, r *http.Request) {
 	token := r.URL.Query().Get("token")
 
 	if !db.ValidateServerToken(token) {
@@ -27,10 +27,10 @@ func TokenGetHandler(w http.ResponseWriter, r *http.Request) {
 //
 // }
 
-func TokenFinalHandler(w http.ResponseWriter, r *http.Request) {
+func ServerTokenFinalHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		TokenGetHandler(w, r)
+		ServerTokenGetHandler(w, r)
 	// case "POST":
 	// 	TokenPostHandler(w, r)
 	default:
