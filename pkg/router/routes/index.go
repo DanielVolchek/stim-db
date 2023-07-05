@@ -1,10 +1,7 @@
 package routes
 
 import (
-	"fmt"
 	"net/http"
-
-	"github.com/danielvolchek/stim-db/pkg/router/middleware"
 )
 
 type Middleware func(http.Handler) http.Handler
@@ -33,20 +30,31 @@ func (route *Route) ConstructRouteHandler(handler *http.ServeMux) {
 }
 
 var IndexFinal = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("hit index route")
+	// all unknown server paths go here
+	if r.URL.Path != "/" {
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte("404 not found"))
+		return
+	}
+
 	w.Write([]byte("Hello from the index"))
 })
 
 var IndexRoute Route = Route{
-	"/", IndexFinal, []Middleware{middleware.AuthMiddleware},
+	"/", IndexFinal, []Middleware{},
 }
 
 func Router(handler *http.ServeMux) {
+
+	// routes := []*Route{&IndexRoute, &UserRoute}
+	routes := []*Route{&IndexRoute, &ServerTokenRoute}
+
 	// val := middleware.AuthMiddleware(IndexRoute)
 	// handler.Handle("/")
 	// handler.Handle(UserRoute.route, UserRoute.handler)
-	IndexRoute.ConstructRouteHandler(handler)
-	UserRoute.ConstructRouteHandler(handler)
+	for _, route := range routes {
+		route.ConstructRouteHandler(handler)
+	}
 }
 
 func handlerFunc(res http.ResponseWriter, req *http.Request) {
