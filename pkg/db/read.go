@@ -1,28 +1,16 @@
 package db
 
-import "log"
+import (
+	"fmt"
+)
 
-func ValidateServerToken(token any) bool {
+func ValidateServerToken(token string) error {
 	var err error
 
-	switch t := token.(type) {
-	case string:
-		err = DB_CONN.First(&ServerAuthToken{Token: t}).Error
-	case ServerAuthToken:
-		err = DB_CONN.First(&t).Error
-	case *ServerAuthToken:
-		err = DB_CONN.First(t).Error
-	default:
-		log.Fatal("typeof token must be string or ServerAuthToken")
-	}
+	var result *ServerAuthToken = &ServerAuthToken{}
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	fmt.Println(token)
+	err = DB_CONN.Where(&ServerAuthToken{Token: token}).First(&result).Error
 
-	if DB_CONN.RowsAffected == 0 {
-		return false
-	}
-
-	return true
+	return err
 }

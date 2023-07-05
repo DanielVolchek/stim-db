@@ -51,12 +51,7 @@ type Image struct {
 	Item   Item   `gorm:"foreignKey:ItemID"`
 }
 
-type EmailToken struct {
-	ID    string `gorm:"column:id;primaryKey;type:uuid;default:uuid_generate_v4()"`
-	Token string `gorm:"column:token;unique;default:uuid_generate_v4()"`
-}
-
 type ServerAuthToken struct {
-	ID    string `gorm:"column:id;primaryKey;type:uuid;default:uuid_generate_v4()"`
+	ID    int    `gorm:"column:id;primaryKey;autoIncrement"`
 	Token string `gorm:"column:token;unique;default:uuid_generate_v4()"`
 }
