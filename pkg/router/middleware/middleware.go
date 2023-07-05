@@ -1,11 +1,8 @@
 package middleware
 
 import (
-	"errors"
-	"log"
+	"fmt"
 	"net/http"
-
-	"github.com/danielvolchek/stim-db/pkg/db"
 )
 
 type AuthError struct {
@@ -13,45 +10,23 @@ type AuthError struct {
 	isAdminError bool
 }
 
-func RespondUnauthorized(w http.ResponseWriter, err AuthError) {
-	w.WriteHeader(http.StatusUnauthorized)
-	log.Println("Error occurred: ", err.Error())
+// not found wraps everything
+func NotFoundMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println(r.URL.Path)
 
-	response := "Unauthorized to access this resource"
-	header := http.StatusUnauthorized
-	if err.isAdminError {
-		response = "Not an admin"
-		header = http.StatusForbidden
-	}
+		next.ServeHTTP(w, r)
 
-	w.WriteHeader(header)
-	w.Write([]byte(response))
-}
-
-func AuthCore(session *http.Cookie, needsAdmin bool) error {
-
-	err := session.Valid()
-
-	if err != nil {
-		return err
-	}
-
-	user, err := db.AuthenticateUserBySession(session.String())
-
-	if err != nil {
-
-		return err
-	}
-
-	if needsAdmin && user.Role != "ADMIN" {
-		return errors.New("User is unauthorized as an admin")
-	}
-
-	return nil
+		// if serveHTTP gets nothing this gets hit instead
+		// w.WriteHeader(http.StatusNotFound)
+		// fmt.Fprintf(w, "404 Page Not Found")
+	})
 }
 
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		fmt.Println("requested route is", r.URL.RequestURI())
 
 		session, err := r.Cookie("session")
 
@@ -59,6 +34,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		if err != nil {
 			RespondUnauthorized(w, AuthError{err, false})
+			return
 		}
 
 		next.ServeHTTP(w, r)
@@ -74,6 +50,7 @@ func AdminMiddleware(next http.Handler) http.Handler {
 
 		if err != nil {
 			RespondUnauthorized(w, AuthError{err, true})
+			return
 		}
 
 		next.ServeHTTP(w, r)
