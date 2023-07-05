@@ -18,6 +18,5 @@ var userHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 })
 
 var UserRoute = Route{"/user", userHandler, []Middleware{
-	middleware.AuthMiddleware,
 	middleware.AdminMiddleware,
 }}
