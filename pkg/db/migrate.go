@@ -15,7 +15,6 @@ func MigrateDB() {
 		&Item{},
 		&RentEvent{},
 		&Image{},
-		&EmailToken{},
 		&ServerAuthToken{},
 	)
 
