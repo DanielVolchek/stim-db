@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"com.stimstore/stim-db/src/router/routes"
+	"github.com/danielvolchek/stim-db/pkg/router/routes"
 )
 
 type ExtendedResponseWriter struct {

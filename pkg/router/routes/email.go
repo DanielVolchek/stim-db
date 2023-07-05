@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"com.stimstore/stim-db/src/db"
+	"github.com/danielvolchek/stim-db/pkg/db"
 )
 
 var EmailRoute Route = Route{

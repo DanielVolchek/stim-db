@@ -3,7 +3,7 @@ package routes
 import (
 	"net/http"
 
-	"com.stimstore/stim-db/src/router/middleware"
+	"github.com/danielvolchek/stim-db/pkg/router/middleware"
 )
 
 var userHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

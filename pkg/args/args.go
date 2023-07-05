@@ -16,6 +16,7 @@ type EnvArgsType struct {
 
 type CmdArgType struct {
 	Migrate bool
+	Auth    bool
 }
 
 func loadEnvVars() EnvArgsType {
@@ -51,6 +52,10 @@ func loadCmdArgs() CmdArgType {
 
 			if arg == "--migrate" {
 				args.Migrate = true
+			}
+
+			if arg == "--auth" {
+				args.Auth = true
 			}
 		}
 

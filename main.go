@@ -4,9 +4,9 @@ import (
 	// std
 
 	// internal
-	"com.stimstore/stim-db/src/args"
-	"com.stimstore/stim-db/src/db"
-	"com.stimstore/stim-db/src/router"
+	"github.com/danielvolchek/stim-db/pkg/args"
+	"github.com/danielvolchek/stim-db/pkg/db"
+	"github.com/danielvolchek/stim-db/pkg/router"
 	// external
 )
 
@@ -21,6 +21,10 @@ func main() {
 	if cmdArgs.Migrate {
 		db.MigrateDB()
 		return
+	}
+
+	if cmdArgs.Auth {
+		db.GenerateServerAuthToken()
 	}
 
 	router.StartHttpClient(envArgs.PORT)

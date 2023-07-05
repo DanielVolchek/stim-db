@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"com.stimstore/stim-db/src/router/middleware"
+	"github.com/danielvolchek/stim-db/pkg/router/middleware"
 )
 
 type Middleware func(http.Handler) http.Handler

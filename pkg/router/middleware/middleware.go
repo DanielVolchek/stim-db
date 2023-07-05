@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"com.stimstore/stim-db/src/db"
+	"github.com/danielvolchek/stim-db/pkg/db"
 )
 
 type AuthError struct {

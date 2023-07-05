@@ -3,7 +3,7 @@ package db
 import (
 	"log"
 
-	"com.stimstore/stim-db/src/args"
+	"github.com/danielvolchek/stim-db/pkg/args"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
