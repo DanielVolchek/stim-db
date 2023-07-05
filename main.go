@@ -25,6 +25,7 @@ func main() {
 
 	if cmdArgs.Auth {
 		db.GenerateServerAuthToken()
+		return
 	}
 
 	router.StartHttpClient(envArgs.PORT)
