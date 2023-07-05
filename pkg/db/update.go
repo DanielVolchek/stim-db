@@ -15,12 +15,3 @@ func AuthenticateUserBySession(s string) (*User, error) {
 
 	return &user, nil
 }
-
-func ValidateEmailToken(t string) error {
-
-	if t == "" {
-		return errors.New("Token required")
-	}
-
-	return DB_CONN.First(&EmailToken{Token: t}).Error
-}
