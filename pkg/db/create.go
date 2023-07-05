@@ -9,10 +9,11 @@ func GenerateServerAuthToken() {
 	token := &ServerAuthToken{}
 
 	err := DB_CONN.Create(&token).Error
-
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("New token is ")
+	fmt.Println(token.Token)
 }
 
 func CreateNewUser(user *User) {
